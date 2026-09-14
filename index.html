@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Story Points Guide — Flexplorer</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+  :root {
+    --surface-0: #f5f4f0;
+    --surface-1: #f0efe9;
+    --surface-2: #ffffff;
+    --text-primary: #1a1a18;
+    --text-secondary: #5f5e5a;
+    --text-muted: #888780;
+    --border: rgba(0,0,0,0.09);
+    --border-strong: rgba(0,0,0,0.14);
+    --radius: 8px;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --bg-success: #EAF3DE; --border-success: #3B6D11; --text-success: #27500A;
+    --bg-warning: #FAEEDA; --border-warning: #854F0B; --text-warning: #633806;
+    --bg-pro: #EEEDFE;     --border-pro: #534AB7;    --text-pro: #3C3489;
+    --bg-danger: #FCEBEB;  --border-danger: #A32D2D; --text-danger: #791F1F;
+    --bg-accent: #E6F1FB;  --border-accent: #185FA5; --text-accent: #0C447C;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --surface-0: #1a1a18;
+      --surface-1: #222220;
+      --surface-2: #2c2c29;
+      --text-primary: #f0efe9;
+      --text-secondary: #b4b2a9;
+      --text-muted: #888780;
+      --border: rgba(255,255,255,0.10);
+      --border-strong: rgba(255,255,255,0.16);
+      --bg-success: #27500A; --border-success: #97C459; --text-success: #C0DD97;
+      --bg-warning: #633806; --border-warning: #EF9F27; --text-warning: #FAC775;
+      --bg-pro: #3C3489;     --border-pro: #AFA9EC;    --text-pro: #CECBF6;
+      --bg-danger: #791F1F;  --border-danger: #F09595; --text-danger: #F7C1C1;
+      --bg-accent: #0C447C;  --border-accent: #85B7EB; --text-accent: #B5D4F4;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    background: var(--surface-0);
+    color: var(--text-primary);
+    padding: 24px;
+    line-height: 1.6;
+  }
+
+  .sec-lbl {
+    font-size: 11px; font-weight: 500; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;
+  }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; }
+  .tab {
+    flex: 1; padding: 10px 8px; border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius); cursor: pointer; background: var(--surface-1);
+    color: var(--text-secondary); font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-family: var(--font-sans);
+  }
+  .tab:hover { background: var(--surface-2); color: var(--text-primary); }
+  .tab.adev  { border: 1.5px solid var(--border-accent); background: var(--bg-accent); color: var(--text-accent); }
+  .tab.adata { border: 1.5px solid var(--border-pro);    background: var(--bg-pro);    color: var(--text-pro); }
+  .tab.aprod { border: 1.5px solid var(--border-success);background: var(--bg-success);color: var(--text-success); }
+
+  .scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 1.5rem; }
+  .sbadge { padding: 12px 6px; border-radius: var(--radius); text-align: center; border: 0.5px solid; }
+  .sbadge .sn { font-size: 20px; font-weight: 500; margin-bottom: 2px; }
+  .sbadge .sl { font-size: 11px; }
+  .sbadge.s1 { background: var(--surface-1); border-color: var(--border-strong); color: var(--text-secondary); }
+  .sbadge.s2 { background: var(--bg-success); border-color: var(--border-success); color: var(--text-success); }
+  .sbadge.s3 { background: var(--bg-warning); border-color: var(--border-warning); color: var(--text-warning); }
+  .sbadge.s5 { background: var(--bg-pro);     border-color: var(--border-pro);     color: var(--text-pro); }
+  .sbadge.s8 { background: var(--bg-danger);  border-color: var(--border-danger);  color: var(--text-danger); }
+
+  .est { background: var(--surface-1); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; border: 0.5px solid var(--border); }
+  .dim { margin-bottom: 1rem; }
+  .dh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .dn { font-size: 13px; font-weight: 500; color: var(--text-primary); display: flex; align-items: center; gap: 6px; }
+  .dv { font-size: 11px; padding: 2px 8px; border-radius: var(--radius); background: var(--surface-2); border: 0.5px solid var(--border); color: var(--text-secondary); }
+  .dlbls { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  input[type=range] {
+    width: 100%; height: 4px; accent-color: var(--border-accent);
+    cursor: pointer;
+  }
+
+  .res {
+    margin-top: 1.25rem; padding: 1rem 1.25rem; border-radius: var(--radius);
+    display: flex; align-items: center; gap: 16px; border: 0.5px solid;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .rn { font-size: 32px; font-weight: 500; min-width: 40px; text-align: center; }
+  .rt { font-size: 14px; font-weight: 500; }
+  .rd { font-size: 12px; margin-top: 2px; opacity: 0.85; }
+
+  hr.div { border: none; border-top: 0.5px solid var(--border); margin: 1.5rem 0; }
+
+  .callout {
+    background: var(--surface-1); border-left: 2px solid var(--border-accent);
+    padding: 10px 12px; margin-bottom: 1.5rem; font-size: 13px; color: var(--text-secondary);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .ex-card {
+    border: 0.5px solid var(--border); border-radius: 12px;
+    padding: 1rem 1.25rem; margin-bottom: 10px; background: var(--surface-2);
+  }
+  .ex-s { font-size: 14px; color: var(--text-primary); line-height: 1.6; margin-bottom: 8px; }
+  .ex-h { font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; font-style: italic; }
+
+  .rbtn {
+    font-size: 12px; padding: 5px 10px; cursor: pointer;
+    border: 0.5px solid var(--border-strong); border-radius: var(--radius);
+    background: transparent; color: var(--text-secondary); font-family: var(--font-sans);
+  }
+  .rbtn:hover { background: var(--surface-1); }
+
+  .ans { display: none; margin-top: 10px; padding: 8px 12px; border-radius: var(--radius); font-size: 13px; border: 0.5px solid; }
+  .ans.s1 { background: var(--surface-1); border-color: var(--border-strong); color: var(--text-secondary); }
+  .ans.s2 { background: var(--bg-success); border-color: var(--border-success); color: var(--text-success); }
+  .ans.s3 { background: var(--bg-warning); border-color: var(--border-warning); color: var(--text-warning); }
+  .ans.s5 { background: var(--bg-pro);     border-color: var(--border-pro);     color: var(--text-pro); }
+  .ans.s8 { background: var(--bg-danger);  border-color: var(--border-danger);  color: var(--text-danger); }
+
+  p.intro { font-size: 13px; color: var(--text-secondary); margin: 0 0 1rem; }
+</style>
+</head>
+<body>
+
+<div class="sec-lbl">Your cohort</div>
+<div class="tabs">
+  <button class="tab" id="tab-dev"     onclick="pick('dev')"><i class="ti ti-code"></i> Dev</button>
+  <button class="tab" id="tab-data"    onclick="pick('data')"><i class="ti ti-database"></i> Data</button>
+  <button class="tab" id="tab-product" onclick="pick('product')"><i class="ti ti-layout-dashboard"></i> Product</button>
+</div>
+
+<div class="callout">
+  <i class="ti ti-info-circle" style="font-size:14px;vertical-align:-1px;margin-right:6px"></i>
+  Story points measure <strong>relative size</strong>, not days. A 5-point story could take less clock time than a 3-point story if the team is familiar with it — complexity, uncertainty, and dependencies matter just as much as effort.
+</div>
+
+<div class="sec-lbl">The scale</div>
+<div class="scale">
+  <div class="sbadge s1"><div class="sn">1</div><div class="sl">Trivial</div></div>
+  <div class="sbadge s2"><div class="sn">2</div><div class="sl">Small</div></div>
+  <div class="sbadge s3"><div class="sn">3</div><div class="sl">Moderate</div></div>
+  <div class="sbadge s5"><div class="sn">5</div><div class="sl">Complex</div></div>
+  <div class="sbadge s8"><div class="sn">8</div><div class="sl">Very complex</div></div>
+</div>
+
+<hr class="div">
+
+<div class="sec-lbl">Estimator — rate each dimension to get a suggested SP</div>
+<div class="est">
+  <div class="dim">
+    <div class="dh">
+      <span class="dn"><i class="ti ti-puzzle"></i>Complexity</span>
+      <span class="dv" id="vx-complexity">Low</span>
+    </div>
+    <input type="range" min="1" max="4" value="1" step="1" id="sx-complexity" oninput="upd()">
+    <div class="dlbls"><span>Low</span><span>Moderate</span><span>High</span><span>Very high</span></div>
+  </div>
+  <div class="dim">
+    <div class="dh">
+      <span class="dn"><i class="ti ti-run"></i>Effort</span>
+      <span class="dv" id="vx-effort">Minimal</span>
+    </div>
+    <input type="range" min="1" max="4" value="1" step="1" id="sx-effort" oninput="upd()">
+    <div class="dlbls"><span>Minimal</span><span>Some</span><span>Substantial</span><span>Heavy</span></div>
+  </div>
+  <div class="dim">
+    <div class="dh">
+      <span class="dn"><i class="ti ti-help"></i>Uncertainty</span>
+      <span class="dv" id="vx-uncertainty">Clear</span>
+    </div>
+    <input type="range" min="1" max="4" value="1" step="1" id="sx-uncertainty" oninput="upd()">
+    <div class="dlbls"><span>Clear</span><span>Some unknowns</span><span>Fuzzy</span><span>Very unclear</span></div>
+  </div>
+  <div class="dim" style="margin-bottom:0">
+    <div class="dh">
+      <span class="dn"><i class="ti ti-link"></i>Dependencies</span>
+      <span class="dv" id="vx-deps">None</span>
+    </div>
+    <input type="range" min="1" max="4" value="1" step="1" id="sx-deps" oninput="upd()">
+    <div class="dlbls"><span>None</span><span>Minor</span><span>Several</span><span>Blocking</span></div>
+  </div>
+  <div class="res" id="res">
+    <div class="rn" id="rn">1</div>
+    <div>
+      <div class="rt" id="rt">Trivial</div>
+      <div class="rd" id="rd">Near-zero complexity, minimal effort, fully understood, and no dependencies at all.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<div class="sec-lbl">Practice: estimate these stories</div>
+<p class="intro" id="ex-intro"></p>
+<div id="ex-box"></div>
+
+<script>
+const DLBLS = {
+  complexity: ['Low','Moderate','High','Very high'],
+  effort: ['Minimal','Some','Substantial','Heavy'],
+  uncertainty: ['Clear','Some unknowns','Fuzzy','Very unclear'],
+  deps: ['None','Minor','Several','Blocking']
+};
+const SPCFG = {
+  1: { bg:'var(--surface-1)', bc:'var(--border-strong)', tc:'var(--text-secondary)', title:'Trivial', desc:'Near-zero complexity, minimal effort, fully understood, and no dependencies at all.' },
+  2: { bg:'var(--bg-success)', bc:'var(--border-success)', tc:'var(--text-success)', title:'Small', desc:'Well-understood work. Low complexity, minimal effort, clear scope, no blockers.' },
+  3: { bg:'var(--bg-warning)', bc:'var(--border-warning)', tc:'var(--text-warning)', title:'Moderate', desc:'Mostly clear scope with some complexity or minor dependencies to navigate.' },
+  5: { bg:'var(--bg-pro)', bc:'var(--border-pro)', tc:'var(--text-pro)', title:'Complex', desc:'Significant effort, notable unknowns, or cross-team coordination required.' },
+  8: { bg:'var(--bg-danger)', bc:'var(--border-danger)', tc:'var(--text-danger)', title:'Very complex', desc:'High uncertainty, potential architectural impact, or blocking external dependencies.' }
+};
+const EX = {
+  dev: {
+    intro: 'Try estimating these dev stories using the four dimensions above, then reveal the suggested answer.',
+    list: [
+      { s: 'Update a button label from "Submit" to "Save changes" on the results page.', h: 'Complexity: low · Effort: minimal · Uncertainty: clear · Dependencies: none', sp: 1, r: 'Pure copy change. No logic, no design ambiguity, no coordination needed.' },
+      { s: 'Fix a display bug where chart tooltips overlap the legend on smaller screens.', h: 'Complexity: low · Effort: minimal · Uncertainty: clear · Dependencies: none', sp: 2, r: 'Targeted, well-understood fix. Clear scope, no other teams involved.' },
+      { s: 'Add a region filter to the backcast results page so users can slice the view by geography.', h: 'Complexity: moderate · Effort: some · Uncertainty: some unknowns · Dependencies: minor (UX spec needed)', sp: 3, r: 'Standard feature work needing design alignment and some state management. Reasonably scoped.' },
+      { s: 'Integrate a new third-party SSO provider for enterprise customers, including all error flows and session handling.', h: 'Complexity: high · Effort: substantial · Uncertainty: fuzzy · Dependencies: several (provider docs, QA, security review)', sp: 5, r: 'Non-trivial integration across multiple systems with external dependencies and security implications.' },
+      { s: 'Refactor the data-fetching layer to support real-time streaming from the new backend API.', h: 'Complexity: very high · Effort: heavy · Uncertainty: very unclear · Dependencies: blocking (API spec not finalised)', sp: 8, r: 'Architectural change with significant unknowns, cross-team dependencies, and high regression risk.' }
+    ]
+  },
+  data: {
+    intro: 'Try estimating these data stories. Consider how well-defined the sources, methodology, and transformations are.',
+    list: [
+      { s: 'Rename a column in an existing output table to match the updated data dictionary.', h: 'Complexity: low · Effort: minimal · Uncertainty: clear · Dependencies: none', sp: 1, r: 'Mechanical rename on a known schema. No logic or downstream impact to assess.' },
+      { s: 'Add a new filter column to the existing backcast SQL query and update the output table.', h: 'Complexity: low · Effort: minimal · Uncertainty: clear · Dependencies: none', sp: 2, r: 'Additive change to a well-understood query. No pipeline restructuring required.' },
+      { s: 'Build a validation pipeline to automatically flag anomalies in incoming regional demand data.', h: 'Complexity: moderate · Effort: some · Uncertainty: some unknowns · Dependencies: minor (data definition doc needed)', sp: 3, r: 'Clear goal but requires defining thresholds and exploring data patterns before implementation.' },
+      { s: 'Build a new backcast model for a region using a different methodology than the current approach.', h: 'Complexity: high · Effort: substantial · Uncertainty: fuzzy · Dependencies: several (methodology sign-off, historical data access)', sp: 5, r: 'Significant modelling work with methodology ambiguity. Needs stakeholder input and data access coordination.' },
+      { s: 'Investigate and resolve a 15% discrepancy between historical backcast outputs and actuals.', h: 'Complexity: very high · Effort: heavy · Uncertainty: very unclear · Dependencies: blocking (source data provenance unknown)', sp: 8, r: 'Root cause is unknown. Could span multiple systems. High uncertainty and potentially blocks downstream work.' }
+    ]
+  },
+  product: {
+    intro: 'Try estimating these product stories. Think about requirements clarity, stakeholder alignment, and what each cohort will need from you.',
+    list: [
+      { s: 'Add a missing edge case to acceptance criteria already agreed with the dev team.', h: 'Complexity: low · Effort: minimal · Uncertainty: clear · Dependencies: none', sp: 1, r: 'Tiny additive update to existing, agreed scope. No alignment work needed.' },
+      { s: 'Update acceptance criteria on an existing ticket based on feedback from the dev review session.', h: 'Complexity: low · Effort: minimal · Uncertainty: clear · Dependencies: none', sp: 2, r: 'Refinement of agreed scope. No new discovery or stakeholder alignment needed.' },
+      { s: 'Write user stories and acceptance criteria for a new "saved views" feature on the backcast results page.', h: 'Complexity: moderate · Effort: some · Uncertainty: some unknowns · Dependencies: minor (UX wireframes needed)', sp: 3, r: 'Some discovery needed to clarify edge cases. Requires UX coordination before dev can start.' },
+      { s: 'Define requirements for integrating an external price data provider into the platform.', h: 'Complexity: high · Effort: substantial · Uncertainty: fuzzy · Dependencies: several (commercial, legal, data team)', sp: 5, r: 'Cross-team scoping with commercial, legal, and technical unknowns. Significant stakeholder coordination needed.' },
+      { s: 'Lead discovery and scoping for a new multi-region portfolio optimisation analytics module.', h: 'Complexity: very high · Effort: heavy · Uncertainty: very unclear · Dependencies: blocking (exec sign-off needed, data team capacity unknown)', sp: 8, r: 'Greenfield discovery with high strategic ambiguity. Scope and feasibility both undefined — major investment before any dev work.' }
+    ]
+  }
+};
+
+let cohort = 'dev';
+
+function pick(c) {
+  cohort = c;
+  const map = { dev: 'adev', data: 'adata', product: 'aprod' };
+  ['dev','data','product'].forEach(x => {
+    document.getElementById('tab-' + x).className = 'tab' + (x === c ? ' ' + map[x] : '');
+  });
+  renderEx();
+}
+
+function upd() {
+  const ds = ['complexity','effort','uncertainty','deps'];
+  ds.forEach(d => {
+    const v = parseInt(document.getElementById('sx-' + d).value, 10);
+    document.getElementById('vx-' + d).textContent = DLBLS[d][v - 1];
+  });
+  const total = ds.reduce((s, d) => s + parseInt(document.getElementById('sx-' + d).value, 10), 0);
+  const sp = total === 4 ? 1 : total <= 6 ? 2 : total <= 9 ? 3 : total <= 12 ? 5 : 8;
+  const c = SPCFG[sp];
+  const r = document.getElementById('res');
+  r.style.background = c.bg;
+  r.style.borderColor = c.bc;
+  r.style.color = c.tc;
+  document.getElementById('rn').textContent = sp;
+  document.getElementById('rt').textContent = c.title;
+  document.getElementById('rd').textContent = c.desc;
+}
+
+function renderEx() {
+  const d = EX[cohort];
+  document.getElementById('ex-intro').textContent = d.intro;
+  const tag = cohort;
+  document.getElementById('ex-box').innerHTML = d.list.map((x, i) => `
+    <div class="ex-card">
+      <div class="ex-s">${x.s}</div>
+      <div class="ex-h"><i class="ti ti-adjustments-horizontal" style="font-size:12px;vertical-align:-1px;margin-right:4px"></i>${x.h}</div>
+      <button class="rbtn" onclick="tog(this,'a-${tag}-${i}')">Show suggested answer</button>
+      <div class="ans s${x.sp}" id="a-${tag}-${i}"><strong>${x.sp} point${x.sp > 1 ? 's' : ''} — ${SPCFG[x.sp].title}.</strong> ${x.r}</div>
+    </div>`).join('');
+}
+
+function tog(btn, id) {
+  const el = document.getElementById(id);
+  const show = el.style.display !== 'block';
+  el.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Hide answer' : 'Show suggested answer';
+}
+
+pick('dev');
+upd();
+</script>
+</body>
+</html>
