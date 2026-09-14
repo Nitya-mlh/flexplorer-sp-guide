@@ -135,13 +135,6 @@
 </head>
 <body>
 
-<div class="sec-lbl">Your cohort</div>
-<div class="tabs">
-  <button class="tab" id="tab-dev"     onclick="pick('dev')"><i class="ti ti-code"></i> Dev</button>
-  <button class="tab" id="tab-data"    onclick="pick('data')"><i class="ti ti-database"></i> Data</button>
-  <button class="tab" id="tab-product" onclick="pick('product')"><i class="ti ti-layout-dashboard"></i> Product</button>
-</div>
-
 <div class="callout">
   <i class="ti ti-info-circle" style="font-size:14px;vertical-align:-1px;margin-right:6px"></i>
   Story points measure <strong>relative size</strong>, not days. A 5-point story could take less clock time than a 3-point story if the team is familiar with it — complexity, uncertainty, and dependencies matter just as much as effort.
@@ -204,7 +197,14 @@
 <hr class="div">
 
 <div class="sec-lbl">Practice: estimate these stories</div>
-<p class="intro" id="ex-intro"></p>
+<p class="intro">Select your cohort, then estimate each story using the dimensions above before revealing the suggested answer.</p>
+
+<div class="tabs">
+  <button class="tab adev" id="tab-dev"     onclick="pick('dev')"><i class="ti ti-code"></i> Dev</button>
+  <button class="tab"      id="tab-data"    onclick="pick('data')"><i class="ti ti-database"></i> Data</button>
+  <button class="tab"      id="tab-product" onclick="pick('product')"><i class="ti ti-layout-dashboard"></i> Product</button>
+</div>
+
 <div id="ex-box"></div>
 
 <script>
@@ -272,7 +272,7 @@ function upd() {
     document.getElementById('vx-' + d).textContent = DLBLS[d][v - 1];
   });
   const total = ds.reduce((s, d) => s + parseInt(document.getElementById('sx-' + d).value, 10), 0);
-  const sp = total === 4 ? 1 : total <= 6 ? 2 : total <= 9 ? 3 : total <= 12 ? 5 : 8;
+  const sp = total === 4 ? 1 : total <= 6 ? 2 : total <= 8 ? 3 : total <= 11 ? 5 : 8;
   const c = SPCFG[sp];
   const r = document.getElementById('res');
   r.style.background = c.bg;
@@ -285,7 +285,7 @@ function upd() {
 
 function renderEx() {
   const d = EX[cohort];
-  document.getElementById('ex-intro').textContent = d.intro;
+  /* intro text is now static */
   const tag = cohort;
   document.getElementById('ex-box').innerHTML = d.list.map((x, i) => `
     <div class="ex-card">
